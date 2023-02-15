@@ -19,6 +19,11 @@ jobs:
           rust: nightly-x86_64-msvc
           target: x86_64-pc-windows-msvc
           archive-name: NodeInject-windows.7z
+        - build: macos
+          os: macos-latest
+          rust: nightly
+          target: aarch64-apple-darwin
+          archive-name: NodeInject-macos.tar.gz
       fail-fast: false
 
     steps:
@@ -60,6 +65,11 @@ jobs:
           cp "./js/license-gen/target/${{ matrix.target }}/release/license-gen.exe" ./archive/
           cd archive
           7z a "${{ matrix.archive-name }}" LICENSE README.md node_inject.exe license-gen.exe
+        else if [ "${{ matrix.build }}" = "linux" ]; then
+          cp "./target/${{ matrix.target }}/release/node_inject" ./archive/
+          cp "./js/license-gen/target/${{ matrix.target }}/release/license-gen" ./archive/
+          cd archive
+          tar -czf "${{ matrix.archive-name }}" LICENSE README.md node_inject license-gen
         else
           cp "./target/${{ matrix.target }}/release/node_inject" ./archive/
           cp "./js/license-gen/target/${{ matrix.target }}/release/license-gen" ./archive/
